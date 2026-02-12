@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sprint Management Extension</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      width: 450px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #333;
+    }
+
+    .container {
+      background: white;
+      margin: 16px;
+      border-radius: 12px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+      overflow: hidden;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      padding: 20px;
+      text-align: center;
+      color: white;
+    }
+
+    .header h1 {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .header p {
+      font-size: 13px;
+      opacity: 0.9;
+    }
+
+    .section {
+      padding: 20px;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    .section:last-child {
+      border-bottom: none;
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: #111827;
+    }
+
+    .section-title .icon {
+      font-size: 20px;
+    }
+
+    .status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 12px;
+      background: #f3f4f6;
+      border-radius: 8px;
+      margin-bottom: 12px;
+      font-size: 13px;
+    }
+
+    .status.success {
+      background: #d1fae5;
+      color: #065f46;
+    }
+
+    .status.error {
+      background: #fee2e2;
+      color: #991b1b;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 6px;
+    }
+    
+    .status.error .error-title {
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .status.error .error-message {
+      font-size: 12px;
+      line-height: 1.4;
+    }
+    
+    .status.error .error-action {
+      font-size: 11px;
+      background: #fca5a5;
+      color: #7f1d1d;
+      padding: 4px 8px;
+      border-radius: 4px;
+      margin-top: 4px;
+      font-weight: 500;
+    }
+    
+    .status-indicator {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #6b7280;
+    }
+
+    .status.success .status-indicator {
+      background: #10b981;
+    }
+
+    .status.error .status-indicator {
+      background: #ef4444;
+    }
+
+    .info-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      background: #f9fafb;
+      border-radius: 6px;
+      margin-bottom: 8px;
+      font-size: 12px;
+      color: #4b5563;
+    }
+
+    .info-row .label {
+      font-weight: 500;
+      min-width: 100px;
+    }
+
+    .info-row .value {
+      flex: 1;
+      color: #111827;
+      word-break: break-all;
+    }
+
+    .button {
+      width: 100%;
+      padding: 10px 16px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .button:last-child {
+      margin-bottom: 0;
+    }
+
+    .button.primary {
+      background: #667eea;
+      color: white;
+    }
+
+    .button.primary:hover {
+      background: #5568d3;
+    }
+
+    .button.secondary {
+      background: #f3f4f6;
+      color: #374151;
+    }
+
+    .button.secondary:hover {
+      background: #e5e7eb;
+    }
+
+    .button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .button .spinner {
+      width: 14px;
+      height: 14px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .footer {
+      padding: 16px 20px;
+      background: #f9fafb;
+      text-align: center;
+      font-size: 11px;
+      color: #6b7280;
+    }
+
+    .footer a {
+      color: #667eea;
+      text-decoration: none;
+    }
+
+    .footer a:hover {
+      text-decoration: underline;
+    }
+
+    .divider {
+      height: 1px;
+      background: #e5e7eb;
+      margin: 12px 0;
+    }
+
+    /* Icons en emoji pour simplicité */
+    .emoji-icon {
+      font-size: 18px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <div class="header">
+      <h1>⚡ Sprint Management</h1>
+      <p id="version">Extension v2.0.3</p>
+    </div>
+
+    <!-- Section Jira -->
+    <div class="section">
+      <div class="section-title">
+        <span class="emoji-icon">🚀</span>
+        <span>Jira Proxy</span>
+      </div>
+
+      <div id="jira-status" class="status">
+        <div class="status-indicator"></div>
+        <span>Vérification...</span>
+      </div>
+
+      <div class="info-row">
+        <span class="label">URL Jira</span>
+        <span class="value" id="jira-url">-</span>
+      </div>
+
+      <div class="info-row">
+        <span class="label">Dernier appel</span>
+        <span class="value" id="jira-last-call">Jamais</span>
+      </div>
+
+      <button class="button primary" id="btn-test-jira">
+        <span>🔍</span>
+        <span>Tester la connexion</span>
+      </button>
+
+      <button class="button secondary" id="btn-open-jira">
+        <span>🔗</span>
+        <span>Ouvrir Jira</span>
+      </button>
+    </div>
+
+    <!-- Section SharePoint -->
+    <div class="section">
+      <div class="section-title">
+        <span class="emoji-icon">📁</span>
+        <span>SharePoint Proxy</span>
+      </div>
+
+      <div id="sharepoint-status" class="status">
+        <div class="status-indicator"></div>
+        <span>Vérification...</span>
+      </div>
+
+      <div class="info-row">
+        <span class="label">Site SharePoint</span>
+        <span class="value">globaltelko.sharepoint.com</span>
+      </div>
+
+      <div class="info-row">
+        <span class="label">Dossier cible</span>
+        <span class="value">/sites/DWVD/Shared Documents/Congés</span>
+      </div>
+
+      <div class="info-row">
+        <span class="label">Cookies trouvés</span>
+        <span class="value" id="sharepoint-cookies">-</span>
+      </div>
+
+      <div class="info-row">
+        <span class="label">Dernier appel</span>
+        <span class="value" id="sharepoint-last-call">Jamais</span>
+      </div>
+
+      <button class="button primary" id="btn-test-sharepoint">
+        <span>🔍</span>
+        <span>Tester la connexion</span>
+      </button>
+
+      <button class="button secondary" id="btn-open-sharepoint">
+        <span>🔗</span>
+        <span>Ouvrir SharePoint</span>
+      </button>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      Extension pour <strong>Sprint Management System</strong><br>
+      <a href="https://studio-sprint-management.figma.site" target="_blank">Ouvrir l'application</a>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

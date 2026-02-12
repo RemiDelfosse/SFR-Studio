@@ -1,0 +1,50 @@
+{
+  "manifest_version": 3,
+  "name": "Sprint Management Extension",
+  "version": "2.0.3",
+  "description": "Extension unifiée Jira + SharePoint + Proxy Supabase - Sprint Management System (v2.0.3)",
+  "permissions": [
+    "storage",
+    "cookies",
+    "activeTab"
+  ],
+  "host_permissions": [
+    "https://jira.private.sfr.com/*",
+    "https://*.sharepoint.com/*",
+    "https://*.supabase.co/*",
+    "https://studio-sprint-management.figma.site/*",
+    "https://*.figma.com/*",
+    "<all_urls>"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://studio-sprint-management.figma.site/*",
+        "https://*.supabase.co/*",
+        "https://*.figma.com/*",
+        "https://*.figma.site/*"
+      ],
+      "js": ["content.js"],
+      "run_at": "document_start",
+      "all_frames": false
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Sprint Management Extension"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["injected.js"],
+      "matches": [
+        "https://studio-sprint-management.figma.site/*",
+        "https://*.supabase.co/*",
+        "https://*.figma.com/*",
+        "https://*.figma.site/*"
+      ]
+    }
+  ]
+}
